@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Renderer, Camera, Transform, Program, Mesh, Color, Vec2, Vec3 } from 'ogl';
+import { Renderer, Camera, Transform, Program, Mesh, Geometry, Color, Vec2, Vec3 } from 'ogl';
 
 const vertexShader = `
 attribute vec2 uv;
@@ -146,11 +146,9 @@ export default function Galaxy({
     window.addEventListener('resize', resize);
     resize();
 
-    const geometry = new Mesh(gl, {
-      geometry: {
-        position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
-        uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
-      },
+    const geometry = new Geometry(gl, {
+      position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
+      uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
     });
 
     const program = new Program(gl, {

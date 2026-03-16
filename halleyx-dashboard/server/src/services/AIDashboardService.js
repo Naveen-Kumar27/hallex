@@ -46,13 +46,13 @@ class AIDashboardService {
 
     try {
         const result = await ai.models.generateContent({
-            model: 'models/gemini-flash-latest',
+            model: 'gemini-2.5-flash',
             contents: promptInstructions
         });
         
-        // The @google/genai SDK returns text at candidates[0].content.parts[0].text
-        let text = "";
-        if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+        // @google/genai SDK exposes result.text as a direct property
+        let text = result.text || "";
+        if (!text && result.candidates && result.candidates[0]?.content?.parts?.length > 0) {
             text = result.candidates[0].content.parts
                 .filter(p => p.text)
                 .map(p => p.text)
@@ -159,12 +159,13 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'models/gemini-flash-latest',
+        model: 'gemini-2.5-flash',
         contents: analysisPrompt
       });
 
-      let text = "";
-      if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts) {
+      // @google/genai SDK exposes result.text as a direct property
+      let text = result.text || "";
+      if (!text && result.candidates && result.candidates[0]?.content?.parts) {
         text = result.candidates[0].content.parts.map(p => p.text).join('');
       }
 
