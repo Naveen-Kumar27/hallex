@@ -3,6 +3,7 @@ import { User, MapPin, Package, Clock, ShieldCheck, Loader2 } from 'lucide-react
 import { format } from 'date-fns';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { API_BASE_URL as API_URL } from '../../config';
 
 const OrderDetailView = ({ data }) => {
   const [isPaying, setIsPaying] = useState(false);
@@ -14,7 +15,7 @@ const OrderDetailView = ({ data }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/payments/create-session`,
+        `${API_URL}/payments/create-session`,
         {
           orderId: data._id,
         },

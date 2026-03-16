@@ -9,6 +9,7 @@ import {
   Camera, MapPin, Briefcase, Phone, Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SOCKET_URL as API_URL } from '../config';
 
 const tabs = [
   { id: 'profile', label: 'My Profile', icon: User },
@@ -74,9 +75,7 @@ const Settings = () => {
     }
   };
 
-  const API_URL = import.meta.env.VITE_API_URL 
-    ? import.meta.env.VITE_API_URL.replace('/api', '') 
-    : 'http://localhost:5000';
+  // API_URL is now imported from config
 
   return (
     <MainLayout title="Enterprise Settings">

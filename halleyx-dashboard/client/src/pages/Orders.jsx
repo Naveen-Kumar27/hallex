@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ordersApi } from '../api';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { API_BASE_URL as API_URL } from '../config';
 import { format } from 'date-fns';
 import { Plus, Search, Filter, MoreHorizontal, Eye, Trash2, ChevronRight, Download, CreditCard, Loader2 } from 'lucide-react';
 import MainLayout from '../components/Layout/MainLayout';
@@ -47,7 +48,7 @@ const Orders = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/payments/create-session`,
+        `${API_URL}/payments/create-session`,
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

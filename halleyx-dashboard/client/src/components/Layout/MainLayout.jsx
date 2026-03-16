@@ -5,6 +5,7 @@ import { LogOut, Search, Bell, Sun, Moon } from 'lucide-react';
 import NotificationPanel from '../UI/NotificationPanel';
 import CommandPalette from '../UI/CommandPalette';
 import Sidebar from './Sidebar';
+import { SOCKET_URL as API_URL } from '../../config';
 
 const MainLayout = ({ children, title = "Customer Orders" }) => {
   const { user, logout } = useAuth();

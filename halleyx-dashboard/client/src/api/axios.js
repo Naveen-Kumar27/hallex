@@ -1,10 +1,7 @@
-import axios from 'axios';
-
-console.log('axios: VITE_API_URL is:', import.meta.env.VITE_API_URL);
-console.log('axios: Resolved Base URL:', import.meta.env.VITE_API_URL || '/api');
+import { API_BASE_URL } from '../config';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
