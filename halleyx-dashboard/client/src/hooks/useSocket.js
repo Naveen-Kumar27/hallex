@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('/', {
+const socketUrl = import.meta.env.VITE_API_URL 
+  ? import.meta.env.VITE_API_URL.replace('/api', '') 
+  : '/';
+
+const socket = io(socketUrl, {
   autoConnect: false,
   transports: ['websocket'],
 });
