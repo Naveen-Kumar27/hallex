@@ -1,13 +1,27 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socketUrl = import.meta.env.VITE_API_URL 
-  ? import.meta.env.VITE_API_URL.replace('/api', '') 
-  : '/';
+const getSocketUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log('useSocket: Found VITE_API_URL:', apiUrl);
+  
+  if (apiUrl && (apiUrl.includes('https://') || apiUrl.includes('http://'))) {
+    const resolvedUrl = apiUrl.replace('/api', '');
+    console.log('useSocket: Resolved URL:', resolvedUrl);
+    return resolvedUrl;
+  }
+  
+  console.log('useSocket: No API URL found, falling back to window location');
+  return '/';
+};
+
+const socketUrl = getSocketUrl();
+console.log('Socket Connection URL:', socketUrl);
 
 const socket = io(socketUrl, {
   autoConnect: false,
   transports: ['websocket'],
+  secure: true
 });
 
 export const useSocket = () => {

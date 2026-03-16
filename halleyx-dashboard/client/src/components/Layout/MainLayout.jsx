@@ -100,7 +100,7 @@ const MainLayout = ({ children, title = "Customer Orders" }) => {
                   >
                      {user?.avatar ? (
                       <img 
-                        src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${user.avatar}`} 
+                        src={`${API_URL}${user.avatar}`} 
                         alt={user.name} 
                         className="w-full h-full object-cover" 
                         onError={(e) => {

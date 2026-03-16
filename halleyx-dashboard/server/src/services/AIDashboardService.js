@@ -46,11 +46,11 @@ class AIDashboardService {
 
     try {
         const result = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: promptInstructions
+            model: 'gemini-1.5-flash',
+            contents: [{ role: 'user', parts: [{ text: promptInstructions }] }]
         });
         
-        // @google/genai SDK exposes result.text as a direct property
+        // In @google/genai SDK, result.text usually works
         let text = result.text || "";
         if (!text && result.candidates && result.candidates[0]?.content?.parts?.length > 0) {
             text = result.candidates[0].content.parts
@@ -159,18 +159,18 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: analysisPrompt
+        model: 'gemini-1.5-flash',
+        contents: [{ role: 'user', parts: [{ text: analysisPrompt }] }]
       });
 
-      // @google/genai SDK exposes result.text as a direct property
+      // In @google/genai SDK, result.text usually works
       let text = result.text || "";
       if (!text && result.candidates && result.candidates[0]?.content?.parts) {
         text = result.candidates[0].content.parts.map(p => p.text).join('');
       }
 
-      if (text.includes('\`\`\`')) {
-        text = text.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
+      if (text.includes('```')) {
+        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
       }
 
       return JSON.parse(text);
