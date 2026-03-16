@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "build": "echo 'No build step required for server'",
     "dev": "nodemon src/index.js",
     "kill-port": "powershell -Command \"Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force -ErrorAction SilentlyContinue; Write-Host 'Port 5000 cleared'\"",
     "fresh": "npm run kill-port && npm run dev"
@@ -19,6 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.5.2",
     "morgan": "^1.10.0",
+    "multer": "^2.1.1",
     "socket.io": "^4.8.3",
     "stripe": "^20.4.1"
   },

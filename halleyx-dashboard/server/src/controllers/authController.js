@@ -68,7 +68,68 @@ exports.getMe = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
+        phoneNumber: user.phoneNumber,
+        location: user.location,
+        jobTitle: user.jobTitle,
       });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.bio = req.body.bio ?? user.bio;
+      user.phoneNumber = req.body.phoneNumber ?? user.phoneNumber;
+      user.location = req.body.location ?? user.location;
+      user.jobTitle = req.body.jobTitle ?? user.jobTitle;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+        bio: updatedUser.bio,
+        phoneNumber: updatedUser.phoneNumber,
+        location: updatedUser.location,
+        jobTitle: updatedUser.jobTitle,
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please upload an image' });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      // Assuming multer is configured to save to 'uploads/'
+      user.avatar = `/uploads/${req.file.filename}`;
+      await user.save();
+      res.json({ avatar: user.avatar });
     } else {
       res.status(404).json({ message: 'User not found' });
     }

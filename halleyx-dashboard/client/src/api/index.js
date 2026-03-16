@@ -49,6 +49,18 @@ export const authApi = {
   getMe: async () => {
     const response = await api.get('/auth/me');
     return response.data;
+  },
+  updateProfile: async (profileData) => {
+    const response = await api.put('/auth/profile', profileData);
+    return response.data;
+  },
+  uploadAvatar: async (formData) => {
+    const response = await api.post('/auth/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
   }
 };
 

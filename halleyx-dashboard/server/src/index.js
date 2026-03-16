@@ -3,9 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
+const path = require('path');
+const fs = require('fs');
 
 const http = require('http');
 const { Server } = require('socket.io');
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Connect to MongoDB
 connectDB();
@@ -24,6 +32,7 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Socket.io connection
 io.on('connection', (socket) => {

@@ -1,10 +1,26 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LabelList } from 'recharts';
 
 const BarChartWidget = ({ data, config }) => {
   const xKey = config?.xAxisField || 'name';
   const yKey = config?.yAxisField || 'value';
-  const color = config?.chartConfig?.colorPalette?.[0] || "#47B393";
+  
+  // Custom label renderer for clarity
+  const renderCustomLabel = (props) => {
+    const { x, y, width, value } = props;
+    return (
+      <text 
+        x={x + width / 2} 
+        y={y - 10} 
+        fill="var(--text-secondary)" 
+        textAnchor="middle" 
+        fontSize={11} 
+        fontWeight="bold"
+      >
+        {value.toLocaleString()}
+      </text>
+    );
+  };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -25,27 +41,39 @@ const BarChartWidget = ({ data, config }) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+      <BarChart data={data} margin={{ top: 25, right: 10, left: -10, bottom: 0 }}>
+        <defs>
+          <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--primary)" stopOpacity={1} />
+            <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.6} />
+          </linearGradient>
+        </defs>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
         <XAxis 
             dataKey={xKey} 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--chart-axis)', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--chart-axis)', fontSize: 11, fontWeight: 600 }} 
             dy={10}
         />
         <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--chart-axis)', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--chart-axis)', fontSize: 11, fontWeight: 600 }} 
         />
-        <Tooltip content={<CustomTooltip />} cursor={{fill: 'var(--surface-hover)'}} />
+        <Tooltip 
+          content={<CustomTooltip />} 
+          cursor={{ fill: 'var(--surface-hover)', radius: 8 }} 
+        />
         <Bar 
           dataKey={yKey} 
-          fill={color} 
+          fill="url(#barGradient)" 
           radius={[6, 6, 0, 0]} 
-          barSize={20}
-        />
+          barSize={24}
+          animationDuration={1500}
+        >
+          <LabelList content={renderCustomLabel} />
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

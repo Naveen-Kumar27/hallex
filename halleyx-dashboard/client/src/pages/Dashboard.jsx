@@ -354,8 +354,13 @@ const Dashboard = () => {
         <WidgetLibrary isEditing={isEditing} />
 
         {/* Dashboard Workspace */}
-        <main className={`flex-1 overflow-y-auto p-6 lg:p-8 transition-all duration-500 ${isEditing ? 'bg-surfaceActive animate-fade-in' : 'bg-transparent'}`}>
-          <div className={`w-full mx-auto max-w-[1600px] h-full ${isEditing ? 'border-2 border-dashed border-primary/20 rounded-3xl bg-surface' : ''}`}>
+        <main className={`flex-1 overflow-y-auto p-6 lg:p-8 transition-all duration-500 relative ${isEditing ? 'bg-surfaceActive animate-fade-in' : 'bg-transparent'}`}>
+          {/* Decorative Background Blobs */}
+          <div className="bg-blob w-[500px] h-[500px] bg-primary/20 -top-64 -left-64 animate-pulse" />
+          <div className="bg-blob w-[400px] h-[400px] bg-secondary/10 bottom-0 -right-32 animate-pulse delay-700" />
+          <div className="bg-blob w-[300px] h-[300px] bg-accentViolet/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-1000" />
+
+          <div className={`w-full mx-auto max-w-[1600px] h-full relative z-10 ${isEditing ? 'border-2 border-dashed border-primary/20 rounded-3xl bg-surface' : ''}`}>
              <div className="p-4 md:p-6 min-h-full">
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">

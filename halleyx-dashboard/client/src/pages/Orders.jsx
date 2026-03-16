@@ -203,6 +203,16 @@ const Orders = () => {
                    <button 
                      onClick={() => {
                         const headers = ["Order#", "Status", "Customer", "Product", "Total"];
+                        
+                        // Helper to escape CSV fields correctly
+                        const escapeCSV = (field) => {
+                          const stringified = String(field || "");
+                          if (stringified.includes(",") || stringified.includes('"') || stringified.includes("\n")) {
+                            return `"${stringified.replace(/"/g, '""')}"`;
+                          }
+                          return stringified;
+                        };
+
                         const rows = filteredOrders.map(o => [
                           o._id, 
                           o.orderInfo?.status || "Pending",
@@ -210,16 +220,24 @@ const Orders = () => {
                           o.orderInfo?.product || "N/A",
                           `$${(o.orderInfo?.totalAmount || 0).toFixed(2)}`
                         ]);
-                        const csvContent = "data:text/csv;charset=utf-8," 
-                          + headers.join(",") + "\n"
-                          + rows.map(e => e.join(",")).join("\n");
-                        const encodedUri = encodeURI(csvContent);
+
+                        const csvContent = [
+                          headers.join(","),
+                          ...rows.map(row => row.map(escapeCSV).join(","))
+                        ].join("\n");
+
+                        // Use Blob for more reliable download than data URI
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        
                         const link = document.createElement("a");
-                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("href", url);
                         link.setAttribute("download", `Halleyx_Orders_${new Date().toISOString().split('T')[0]}.csv`);
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
                         toast.success("CSV Export Triggered");
                      }}
                      className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-borderLight rounded-xl text-sm font-bold text-textSecondary hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all shadow-sm"

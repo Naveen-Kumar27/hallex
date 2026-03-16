@@ -1,10 +1,9 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LabelList } from 'recharts';
 
 const LineChartWidget = ({ data, config }) => {
   const xKey = config?.xAxisField || 'name';
   const yKey = config?.yAxisField || 'value';
-  const color = config?.chartConfig?.colorPalette?.[0] || "#FF8A00";
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -25,29 +24,51 @@ const LineChartWidget = ({ data, config }) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+      <LineChart data={data} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+        <defs>
+          <filter id="shadow" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.3" />
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
         <XAxis 
             dataKey={xKey} 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--chart-axis)', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--chart-axis)', fontSize: 11, fontWeight: 600 }} 
             dy={10}
         />
         <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--chart-axis)', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--chart-axis)', fontSize: 11, fontWeight: 600 }} 
         />
         <Tooltip content={<CustomTooltip />} />
         <Line 
           type="monotone" 
           dataKey={yKey} 
-          stroke={color} 
+          stroke="var(--secondary)" 
           strokeWidth={4}
-          activeDot={{ r: 6, fill: "#fff", stroke: color, strokeWidth: 3 }}
-          dot={{ r: 4, fill: "#fff", stroke: color, strokeWidth: 2 }}
-        />
+          filter="url(#shadow)"
+          activeDot={{ r: 6, fill: "#fff", stroke: "var(--secondary)", strokeWidth: 3 }}
+          dot={{ r: 4, fill: "#fff", stroke: "var(--secondary)", strokeWidth: 2 }}
+          animationDuration={1500}
+        >
+          <LabelList 
+            dataKey={yKey} 
+            position="top" 
+            offset={12} 
+            style={{ fill: 'var(--text-secondary)', fontSize: '11px', fontWeight: 'bold' }} 
+          />
+        </Line>
       </LineChart>
     </ResponsiveContainer>
   );

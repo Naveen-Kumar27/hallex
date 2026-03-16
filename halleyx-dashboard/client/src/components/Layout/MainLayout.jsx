@@ -92,13 +92,25 @@ const MainLayout = ({ children, title = "Customer Orders" }) => {
               <div className="flex items-center gap-3 ml-2 pr-2">
                  <div className="text-right hidden sm:block">
                     <p className="text-sm font-bold text-textPrimary leading-none">{user?.name || "Premium User"}</p>
-                    <p className="text-[10px] text-primary mt-1 uppercase tracking-widest font-black opacity-80">Admin Member</p>
+                    <p className="text-[10px] text-primary mt-1 uppercase tracking-widest font-black opacity-80">{user?.jobTitle || "Admin Member"}</p>
                  </div>
                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-textPrimary font-bold overflow-hidden border border-white/10 shadow-lg"
-                    style={{ background: 'linear-gradient(135deg, rgb(var(--primary-rgb) / 0.3), rgb(var(--secondary-rgb) / 0.3))' }}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-textPrimary font-bold overflow-hidden border border-white/10 shadow-lg relative bg-surface"
+                    style={{ background: !user?.avatar ? 'linear-gradient(135deg, rgb(var(--primary-rgb) / 0.3), rgb(var(--secondary-rgb) / 0.3))' : 'none' }}
                   >
-                    {user?.name?.charAt(0) || "U"}
+                    {user?.avatar ? (
+                      <img 
+                        src={`http://localhost:5000${user.avatar}`} 
+                        alt={user.name} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=6366F1&color=fff`;
+                        }}
+                      />
+                    ) : (
+                      user?.name?.charAt(0) || "B"
+                    )}
                  </div>
               </div>
 

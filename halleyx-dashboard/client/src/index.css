@@ -5,43 +5,64 @@
 @tailwind utilities;
 
 :root {
-  --background: #F9FAFB;
+  --background: #F8FAFC;
   --surface: #FFFFFF;
-  --surface-hover: #F3F4F6;
-  --surface-active: #E5E7EB;
-  --border-light: #E5E7EB;
-  --primary: #47B393;
-  --secondary: #FF8A00;
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF;
+  --surface-hover: #F1F5F9;
+  --surface-active: #E2E8F0;
+  --border-light: #E2E8F0;
+  
+  /* Vibrant Palette */
+  --primary: #6366F1; /* Indigo */
+  --primary-glow: #818CF8;
+  --secondary: #EC4899; /* Pink */
+  --accent-teal: #10B981;
+  --accent-amber: #F59E0B;
+  --accent-violet: #8B5CF6;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
   
   --chart-grid: #F1F5F9;
-  --chart-axis: #94A3B8;
-  --card-shadow: rgba(0, 0, 0, 0.05);
-  --primary-rgb: 71 179 147;
-  --secondary-rgb: 255 138 0;
+  --chart-axis: #475569; /* Darker Slate for better contrast */
+  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --primary-rgb: 99 102 241;
+  --secondary-rgb: 236 72 153;
   --surface-rgb: 255 255 255;
+  
+  /* Gradients */
+  --grad-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  --grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
 }
 
 [data-theme='midnight'] {
-  --background: #080A0F;
-  --surface: #111622;
-  --surface-hover: #1A2234;
-  --surface-active: #232B3D;
-  --border-light: rgba(255, 255, 255, 0.08);
-  --primary: #52D1AC;
-  --secondary: #9333EA; /* Electric Purple */
-  --text-primary: #FFFFFF;
+  --background: #0B0F1A;
+  --surface: #161B2C;
+  --surface-hover: #1F263D;
+  --surface-active: #28314F;
+  --border-light: rgba(255, 255, 255, 0.06);
+  
+  --primary: #818CF8;
+  --primary-glow: #6366F1;
+  --secondary: #F472B6;
+  --accent-teal: #34D399;
+  --accent-amber: #FBBF24;
+  --accent-violet: #A78BFA;
+
+  --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-tertiary: #64748B;
   
-  --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-axis: #475569;
-  --card-shadow: rgba(0, 0, 0, 0.5);
-  --primary-rgb: 82 209 172;
-  --secondary-rgb: 147 51 234;
-  --surface-rgb: 17 22 34;
+  --chart-grid: rgba(255, 255, 255, 0.03);
+  --chart-axis: #A1A1AA; /* Zinc-400 for better visibility in dark mode */
+  --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --primary-rgb: 129 140 248;
+  --secondary-rgb: 244 114 182;
+  --surface-rgb: 22 27 44;
+  
+  /* Midnight Gradients */
+  --grad-primary: linear-gradient(135deg, #818CF8 0%, #C084FC 100%);
+  --grad-surface: linear-gradient(180deg, rgba(22, 27, 44, 0.8) 0%, rgba(22, 27, 44, 0.4) 100%);
 }
 
 @layer base {
@@ -104,21 +125,42 @@ html, body, #root {
 
 /* Premium Utilities */
 .glass-card {
-  background-color: var(--surface);
-  @apply border border-borderLight rounded-3xl backdrop-blur-xl shadow-xl transition-all duration-300;
+  background: var(--grad-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--card-shadow);
+  @apply rounded-[2rem] transition-all duration-500 hover:shadow-2xl hover:-translate-y-1;
 }
 
 [data-theme='midnight'] .glass-card {
-  background-color: rgba(17, 22, 34, 0.7);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .neon-glow {
-  box-shadow: 0 0 15px rgb(var(--primary-rgb) / 0.3);
+  box-shadow: 0 0 30px -5px rgb(var(--primary-rgb) / 0.4);
 }
 
 .text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-blob {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.15;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+[data-theme='midnight'] .bg-blob {
+  opacity: 0.2;
 }
 
 .sidebar-gradient {
