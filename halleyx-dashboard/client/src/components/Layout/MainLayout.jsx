@@ -98,9 +98,9 @@ const MainLayout = ({ children, title = "Customer Orders" }) => {
                     className="w-10 h-10 rounded-xl flex items-center justify-center text-textPrimary font-bold overflow-hidden border border-white/10 shadow-lg relative bg-surface"
                     style={{ background: !user?.avatar ? 'linear-gradient(135deg, rgb(var(--primary-rgb) / 0.3), rgb(var(--secondary-rgb) / 0.3))' : 'none' }}
                   >
-                    {user?.avatar ? (
+                     {user?.avatar ? (
                       <img 
-                        src={`http://localhost:5000${user.avatar}`} 
+                        src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${user.avatar}`} 
                         alt={user.name} 
                         className="w-full h-full object-cover" 
                         onError={(e) => {

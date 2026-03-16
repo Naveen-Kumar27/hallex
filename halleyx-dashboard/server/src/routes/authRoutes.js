@@ -8,10 +8,16 @@ const { protect } = require('../middlewares/authMiddleware');
 // Multer Config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const uploadPath = path.join(__dirname, '../../uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, `${req.user._id}-${Date.now()}${path.extname(file.originalname)}`);
+    const filename = `${req.user._id}-${Date.now()}${path.extname(file.originalname)}`;
+    console.log('Generating filename for upload:', filename);
+    cb(null, filename);
   },
 });
 

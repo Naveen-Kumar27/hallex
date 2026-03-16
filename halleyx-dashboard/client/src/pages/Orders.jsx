@@ -47,7 +47,7 @@ const Orders = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/payments/create-session',
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/payments/create-session`,
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

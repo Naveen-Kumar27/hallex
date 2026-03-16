@@ -119,21 +119,34 @@ exports.updateProfile = async (req, res) => {
 
 exports.uploadAvatar = async (req, res) => {
   try {
+    console.log('Received avatar upload request');
     if (!req.file) {
+      console.log('No file received in request');
       return res.status(400).json({ message: 'Please upload an image' });
     }
+
+    console.log('File details:', {
+      filename: req.file.filename,
+      path: req.file.path,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
 
     const user = await User.findById(req.user._id);
 
     if (user) {
+      console.log(`Updating avatar for user: ${user.email}`);
       // Assuming multer is configured to save to 'uploads/'
       user.avatar = `/uploads/${req.file.filename}`;
       await user.save();
+      console.log('Avatar saved successfully to DB');
       res.json({ avatar: user.avatar });
     } else {
+      console.log('User not found for ID:', req.user._id);
       res.status(404).json({ message: 'User not found' });
     }
   } catch (error) {
+    console.error('Error in uploadAvatar:', error);
     res.status(500).json({ message: error.message });
   }
 };
