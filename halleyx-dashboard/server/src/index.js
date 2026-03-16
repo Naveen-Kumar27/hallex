@@ -83,4 +83,4 @@ server.on('error', (err) => {
   }
 });
 
-module.exports = { app, server, io };
+module.exports = app;
