@@ -1,0 +1,77 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const connectDB = require('./config/db');
+
+const http = require('http');
+const { Server } = require('socket.io');
+
+// Connect to MongoDB
+connectDB();
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // Adjust for production
+    methods: ['GET', 'POST'],
+  },
+  transports: ['websocket', 'polling'],
+});
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
+
+// Socket.io connection
+io.on('connection', (socket) => {
+  console.log(`New client connected: ${socket.id}`);
+  
+  socket.on('disconnect', () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
+});
+
+// Make io accessible to routes
+app.set('io', io);
+
+// Simple root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the Halleyx Dashboard API' });
+});
+
+// Import Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/dashboards', require('./routes/dashboardRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
+// app.use('/api/widgets', require('./routes/widgetRoutes'));
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error' });
+});
+
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Graceful error handler — prevents unhandled 'error' event crashes
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ Port ${PORT} is already in use.`);
+    console.error(`   Run: Stop-Process -Id (Get-NetTCPConnection -LocalPort ${PORT}).OwningProcess -Force`);
+    console.error(`   Then restart: npm run dev\n`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
+});
+
+module.exports = { app, server, io };

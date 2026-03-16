@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface-hover: #F3F4F6;
+  --surface-active: #E5E7EB;
+  --border-light: #E5E7EB;
+  --primary: #47B393;
+  --secondary: #FF8A00;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  
+  --chart-grid: #F1F5F9;
+  --chart-axis: #94A3B8;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --primary-rgb: 71 179 147;
+  --secondary-rgb: 255 138 0;
+  --surface-rgb: 255 255 255;
+}
+
+[data-theme='midnight'] {
+  --background: #080A0F;
+  --surface: #111622;
+  --surface-hover: #1A2234;
+  --surface-active: #232B3D;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --primary: #52D1AC;
+  --secondary: #9333EA; /* Electric Purple */
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --chart-axis: #475569;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+  --primary-rgb: 82 209 172;
+  --secondary-rgb: 147 51 234;
+  --surface-rgb: 17 22 34;
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    @apply transition-colors duration-500;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #E2E8F0;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #CBD5E1;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Premium Utilities */
+.glass-card {
+  background-color: var(--surface);
+  @apply border border-borderLight rounded-3xl backdrop-blur-xl shadow-xl transition-all duration-300;
+}
+
+[data-theme='midnight'] .glass-card {
+  background-color: rgba(17, 22, 34, 0.7);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.neon-glow {
+  box-shadow: 0 0 15px rgb(var(--primary-rgb) / 0.3);
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+}
+
+.sidebar-gradient {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+}
+
+/* Specific Component Fixes */
+.table-container {
+  @apply glass-card overflow-hidden;
+}
+
+/* React Grid Layout Enhancements */
+.react-grid-item.react-grid-placeholder {
+  background-color: rgb(var(--primary-rgb) / 0.1) !important;
+  border: 2px dashed rgb(var(--primary-rgb) / 0.4) !important;
+  border-radius: 1.5rem !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: blur(8px);
+  opacity: 1 !important;
+}
+
+.react-resizable-handle {
+  @apply absolute opacity-0 transition-opacity duration-300 z-50 !important;
+  background-image: none !important;
+}
+
+.react-grid-item:hover .react-resizable-handle {
+  @apply opacity-100 !important;
+}
+
+/* Corner Handles */
+.react-resizable-handle-se { @apply bottom-2 right-2 w-4 h-4 cursor-se-resize border-r-2 border-b-2 border-primary/40 rounded-br-sm; }
+.react-resizable-handle-sw { @apply bottom-2 left-2 w-4 h-4 cursor-sw-resize border-l-2 border-b-2 border-primary/40 rounded-bl-sm; }
+.react-resizable-handle-ne { @apply top-2 right-2 w-4 h-4 cursor-ne-resize border-r-2 border-t-2 border-primary/40 rounded-tr-sm; }
+.react-resizable-handle-nw { @apply top-2 left-2 w-4 h-4 cursor-nw-resize border-l-2 border-t-2 border-primary/40 rounded-tl-sm; }
+
+/* Edge Handles */
+.react-resizable-handle-s { @apply bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 cursor-s-resize bg-primary/20 rounded-full hover:bg-primary/40; }
+.react-resizable-handle-n { @apply top-0 left-1/2 -translate-x-1/2 w-8 h-1 cursor-n-resize bg-primary/20 rounded-full hover:bg-primary/40; }
+.react-resizable-handle-e { @apply right-0 top-1/2 -translate-y-1/2 w-1 h-8 cursor-e-resize bg-primary/20 rounded-full hover:bg-primary/40; }
+.react-resizable-handle-w { @apply left-0 top-1/2 -translate-y-1/2 w-1 h-8 cursor-w-resize bg-primary/20 rounded-full hover:bg-primary/40; }
+
+.layout-item-dragging {
+  @apply scale-[1.01] shadow-2xl z-50 cursor-grabbing !important;
+  border-color: rgb(var(--primary-rgb) / 0.5) !important;
+}
+
