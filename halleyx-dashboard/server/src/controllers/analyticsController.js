@@ -40,13 +40,14 @@ exports.aiAnalyzeRequirement = async (req, res) => {
   try {
     console.log("Request body:", req.body);
     const { prompt, history } = req.body;
-    console.log('Backend: AI Analyze Request received. Prompt:', prompt);
+    
     if (!prompt) return res.status(400).json({ message: "Prompt is required" });
+    
     const analysis = await AIDashboardService.analyzeRequirement(prompt, history);
-    res.status(200).json(analysis);
+    res.json(analysis);
   } catch (error) {
-    console.error('Backend: AI Analyze Error:', error);
-    res.status(500).json({ message: 'Error analyzing requirement', error: error.message });
+    console.error(error);   // 🔥 THIS WILL SHOW ERROR
+    res.status(500).json({ error: error.message });
   }
 };
 
