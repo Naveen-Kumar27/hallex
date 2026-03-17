@@ -49,7 +49,7 @@ app.set('io', io);
 
 // Simple root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Halleyx Dashboard API', version: '1.0.1 (debug-model-fix)', timestamp: new Date().toISOString() });
+  res.json({ message: 'Welcome to the Halleyx Dashboard API', version: '1.0.3 (final-diag)', timestamp: new Date().toISOString() });
 });
 
 // Import Routes
@@ -60,14 +60,14 @@ app.use('/api/payments', require('./routes/paymentRoutes'));
 // app.use('/api/widgets', require('./routes/widgetRoutes'));
 
 // Debug Environment (Remove in production)
-app.get('/api/analytics/debug-env', (req, res) => {
+app.get('/debug-env', (req, res) => {
   const key = process.env.GEMINI_API_KEY;
   res.json({
     hasKey: !!key,
     keyLength: key ? key.length : 0,
     keyPrefix: key ? key.substring(0, 8) + '...' : 'none',
     nodeEnv: process.env.NODE_ENV,
-    version: '1.0.2'
+    version: '1.0.3'
   });
 });
 
