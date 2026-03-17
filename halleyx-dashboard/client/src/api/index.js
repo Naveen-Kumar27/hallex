@@ -95,7 +95,15 @@ export const analyticsApi = {
     return response.data;
   },
 
+  aiGenerate: async (prompt) => {
+    const response = await api.post('/analytics/ai-generate', { prompt });
+    return response.data;
+  },
 
+  aiAnalyze: async (prompt, history) => {
+    const response = await api.post('/analytics/ai-analyze', { prompt, history });
+    return response.data;
+  },
 
   // Fetch data specifically tailored to a single widget's config logic + Date Filter
   getWidgetData: async (widgetId, dateRange, type, config) => {

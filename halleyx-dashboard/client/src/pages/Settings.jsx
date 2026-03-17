@@ -347,6 +347,7 @@ const Settings = () => {
               <motion.div key="notifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
                  <div className="space-y-6">
                     {[
+                      { title: 'AI Workspace', desc: 'Get smart suggestions and auto-generated layouts.', toggle: true },
                       { title: 'Security Alerts', desc: 'Real-time login and access telemetry notification.', toggle: true },
                       { title: 'Payment Intel', desc: 'Sync monthly budget and billing cycle updates.', toggle: true },
                       { title: 'Network Orders', desc: 'Broadcast alerts when high-value orders hit the grid.', toggle: false }
