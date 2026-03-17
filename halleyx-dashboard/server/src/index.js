@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const path = require('path');
 const fs = require('fs');
+const AIDashboardService = require('./services/AIDashboardService');
 
 const http = require('http');
 const { Server } = require('socket.io');
@@ -57,6 +58,21 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/dashboards', require('./routes/dashboardRoutes'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 // app.use('/api/widgets', require('./routes/widgetRoutes'));
+
+// AI Analyze Requirement (Directly in index.js for debugging Render issue)
+app.post('/api/analytics/ai-analyze', async (req, res) => {
+  try {
+    console.log("Request body:", req.body);
+    const { prompt, history } = req.body;
+    if (!prompt) return res.status(400).json({ message: "Prompt is required" });
+    const analysis = await AIDashboardService.analyzeRequirement(prompt, history);
+    res.json(analysis);
+  } catch (error) {
+    console.error(error);   // 🔥 THIS WILL SHOW ERROR
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Error Handling Middleware
