@@ -49,10 +49,10 @@ class AIDashboardService {
     `;
 
     try {
-        const result = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
-            contents: promptInstructions
-        });
+      const result = await ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: promptInstructions
+      });
         
         // In @google/genai SDK, result.text usually works
         let text = result.text || "";
@@ -164,7 +164,7 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-1.5-flash',
         contents: analysisPrompt
       });
 
@@ -184,7 +184,7 @@ class AIDashboardService {
       // Robust Markdown cleaning
       text = text.trim();
       if (text.startsWith('```')) {
-        text = text.replace(/^```json\n?/, '').replace(/```\n?$/, '').trim();
+        text = text.replace(/^```[a-z]*\n?/, '').replace(/```\n?$/, '').trim();
       }
 
       try {
