@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.45.0",
+    "@google/generative-ai": "^0.24.1",
     "aws4": "^1.13.2",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",

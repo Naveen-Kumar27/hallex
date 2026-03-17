@@ -28,7 +28,8 @@ exports.aiGenerateDashboard = async (req, res) => {
     const dashboard = await AIDashboardService.generateDashboardFromPrompt(prompt);
     res.status(201).json(dashboard);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -41,7 +42,8 @@ exports.aiAnalyzeRequirement = async (req, res) => {
     const response = await AIDashboardService.analyzeRequirement(prompt, history);
     res.json(response);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
