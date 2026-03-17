@@ -49,7 +49,7 @@ app.set('io', io);
 
 // Simple root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Halleyx Dashboard API' });
+  res.json({ message: 'Welcome to the Halleyx Dashboard API', version: '1.0.1 (debug-model-fix)', timestamp: new Date().toISOString() });
 });
 
 // Import Routes
