@@ -87,8 +87,14 @@ app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
+  console.error("Global Error Caught:", err.message);
   console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error' });
+  res.header('X-Debug-Source', 'Global-Error-Handler');
+  res.status(500).json({ 
+    message: 'Internal Server Error',
+    error: err.message,
+    deployId: 'DEBUG_403_V2'
+  });
 });
 
 const PORT = process.env.PORT || 5000;

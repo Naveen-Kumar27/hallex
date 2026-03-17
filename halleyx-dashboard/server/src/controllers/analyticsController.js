@@ -46,8 +46,12 @@ exports.aiAnalyzeRequirement = async (req, res) => {
     const analysis = await AIDashboardService.analyzeRequirement(prompt, history);
     res.json(analysis);
   } catch (error) {
-    console.error(error);   // 🔥 THIS WILL SHOW ERROR
-    res.status(500).json({ error: error.message });
+    console.error("Analytics Controller Error:", error);
+    res.header('X-Debug-Source', 'Analytics-Controller-Catch');
+    res.status(500).json({ 
+      error: error.message,
+      deployId: 'DEBUG_403_V2'
+    });
   }
 };
 

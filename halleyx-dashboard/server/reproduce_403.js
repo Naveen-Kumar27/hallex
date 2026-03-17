@@ -35,7 +35,8 @@ async function reproduce() {
     } catch (error) {
         if (error.response) {
             console.error("FAILED with Status:", error.response.status);
-            console.error("DATA:", JSON.stringify(error.response.data, null, 2));
+            console.error("ERROR MESSAGE:", error.response.data.error || error.response.data.message);
+            console.error("FULL DATA:", JSON.stringify(error.response.data, null, 2));
         } else {
             console.error("ERROR:", error.message);
         }
