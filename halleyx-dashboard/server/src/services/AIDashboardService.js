@@ -50,8 +50,8 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'models/gemini-1.5-flash',
-        contents: promptInstructions
+        model: 'gemini-1.5-flash',
+        contents: [{ role: 'user', parts: [{ text: promptInstructions }] }]
       });
         
         // In @google/genai SDK, result.text usually works
@@ -164,8 +164,8 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'models/gemini-1.5-flash',
-        contents: analysisPrompt
+        model: 'gemini-1.5-flash',
+        contents: [{ role: 'user', parts: [{ text: analysisPrompt }] }]
       });
 
       // In @google/genai SDK, result.text usually works
