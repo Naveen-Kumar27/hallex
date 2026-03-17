@@ -60,23 +60,24 @@ class AIDashboardService {
         }
         
         if (!text) {
-            console.error("AI Full Response:", JSON.stringify(result, null, 2));
-            throw new Error("AI returned an empty response or unexpected structure.");
+          console.error("AI Full Response (generateDashboardFromPrompt):", JSON.stringify(result, null, 2));
+          throw new Error("AI returned an empty response or unexpected structure.");
         }
 
-        console.log("Extracted Text:", text.substring(0, 200));
+        console.log("Extracted Text (generateDashboardFromPrompt):", text.substring(0, 200));
 
-        // Clean markdown backticks if AI accidentally included them
-        if (text.includes('\`\`\`')) {
-            text = text.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
+        // Robust Markdown cleaning
+        text = text.trim();
+        if (text.startsWith('```')) {
+          text = text.replace(/^```json\n?/, '').replace(/```\n?$/, '').trim();
         }
 
         let generatedConfig;
         try {
-            generatedConfig = JSON.parse(text);
+          generatedConfig = JSON.parse(text);
         } catch (parseErr) {
-            console.error("JSON Parse Error. Content was:", text);
-            throw new Error("Failed to parse AI response into JSON. " + parseErr.message);
+          console.error("JSON Parse Error in generateDashboardFromPrompt. Content was:", text);
+          throw new Error("Failed to parse AI response into JSON. " + parseErr.message);
         }
 
         const widgetsData = generatedConfig.map(conf => ({
@@ -166,14 +167,28 @@ class AIDashboardService {
       // In @google/genai SDK, result.text usually works
       let text = result.text || "";
       if (!text && result.candidates && result.candidates[0]?.content?.parts) {
-        text = result.candidates[0].content.parts.map(p => p.text).join('');
+        text = result.candidates[0].content.parts.filter(p => p.text).map(p => p.text).join('');
       }
 
-      if (text.includes('```')) {
-        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      if (!text) {
+        console.error("AI Full Response (analyzeRequirement):", JSON.stringify(result, null, 2));
+        throw new Error("AI returned an empty response for analysis.");
       }
 
-      return JSON.parse(text);
+      console.log("Extracted Text (analyzeRequirement):", text.substring(0, 200));
+
+      // Robust Markdown cleaning
+      text = text.trim();
+      if (text.startsWith('```')) {
+        text = text.replace(/^```json\n?/, '').replace(/```\n?$/, '').trim();
+      }
+
+      try {
+        return JSON.parse(text);
+      } catch (parseErr) {
+        console.error("JSON Parse Error in analyzeRequirement. Content was:", text);
+        throw new Error("Failed to parse AI analysis into JSON: " + parseErr.message);
+      }
     } catch (err) {
       console.error("AI Analysis Failed:", err);
       throw new Error("Failed to analyze requirements: " + err.message);
