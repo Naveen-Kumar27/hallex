@@ -195,7 +195,13 @@ class AIDashboardService {
       }
     } catch (err) {
       console.error("AI Analysis Failed:", err);
-      if (err.status === 503 || (err.message && err.message.includes('overloaded'))) {
+      const errString = err.message ? err.message.toLowerCase() : "";
+      
+      if (err.status === 429 || errString.includes('429') || errString.includes('quota') || errString.includes('exhausted')) {
+         throw new Error("GEMINI_QUOTA_EXCEEDED: Your API key has exceeded its quota or has a limit of 0 for the free tier in your region. Please check your Google AI Studio billing/plan details.");
+      }
+      
+      if (err.status === 503 || errString.includes('overloaded')) {
         throw new Error("GEMINI_OVERLOADED: The AI service is currently experiencing high traffic. Please try again in a few moments.");
       }
       throw new Error("Failed to analyze requirements: " + err.message);
