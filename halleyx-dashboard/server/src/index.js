@@ -52,6 +52,16 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Halleyx Dashboard API', status: 'stable' });
 });
 
+app.get('/final-diag', (req, res) => {
+  res.json({
+    status: 'ok',
+    hasKey: !!process.env.GEMINI_API_KEY,
+    keyPrefix: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'none',
+    timestamp: new Date().toISOString(),
+    node_env: process.env.NODE_ENV
+  });
+});
+
 // Import Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
