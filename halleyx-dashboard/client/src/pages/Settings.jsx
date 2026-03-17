@@ -349,8 +349,7 @@ const Settings = () => {
                     {[
                       { title: 'Security Alerts', desc: 'Real-time login and access telemetry notification.', toggle: true },
                       { title: 'Payment Intel', desc: 'Sync monthly budget and billing cycle updates.', toggle: true },
-                      { title: 'Network Orders', desc: 'Broadcast alerts when high-value orders hit the grid.', toggle: false },
-                      { title: 'AI Workspace', desc: 'Signals when background analytical processing completes.', toggle: true },
+                      { title: 'Network Orders', desc: 'Broadcast alerts when high-value orders hit the grid.', toggle: false }
                     ].map((item, idx) => (
                       <div key={idx} className="p-6 flex items-center justify-between bg-surface/30 border border-borderLight/50 rounded-3xl hover:bg-white transition-all group">
                         <div className="pr-6">

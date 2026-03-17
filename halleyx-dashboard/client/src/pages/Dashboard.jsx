@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DashboardGrid from '../components/Dashboard/DashboardGrid';
 import { analyticsApi, dashboardsApi } from '../api';
-import { LayoutDashboard, Share2, Settings, Bot, Undo2, Redo2, Save } from 'lucide-react';
+import { LayoutDashboard, Share2, Settings, Layers, Undo2, Redo2, Save, Zap } from 'lucide-react';
 import MainLayout from '../components/Layout/MainLayout';
 import WidgetConfigurationPanel from '../components/Dashboard/WidgetConfigurationPanel';
 import WidgetLibrary from '../components/Dashboard/WidgetLibrary';
@@ -11,7 +11,11 @@ import CodeExportModal from '../components/UI/CodeExportModal';
 import WidgetRenderer from '../components/Dashboard/WidgetRenderer';
 import useSocket from '../hooks/useSocket';
 import toast from 'react-hot-toast';
-import AiAssistantModal from '../components/Dashboard/AiAssistantModal';
+
+
+// Module-level var to reliably track dragged widget type.
+// react-grid-layout clears dataTransfer before onDrop fires.
+let _draggedWidgetType = null;
 
 const Dashboard = () => {
   const [layouts, setLayouts] = useState({ lg: [], md: [], sm: [] });
@@ -23,9 +27,7 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [configuringWidget, setConfiguringWidget] = useState(null);
-  const [aiPrompt, setAiPrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+
   
   // History state for Undo/Redo
   const [pastLayouts, setPastLayouts] = useState([]);
@@ -262,7 +264,6 @@ const Dashboard = () => {
   };
 
   const handleAutoGenerate = async () => {
-    setIsGenerating(true);
     try {
         const newDashboard = await analyticsApi.autoGenerate();
         setDashboardId(newDashboard._id);
@@ -272,31 +273,15 @@ const Dashboard = () => {
         toast.success("Template applied");
     } catch (err) {
         toast.error("Generation failed");
-    } finally {
-        setIsGenerating(false);
     }
  };
 
-  const handleAiGenerate = async (e) => {
-     if (e) e.preventDefault();
-     if (!aiPrompt.trim()) {
-       toast.error("Please enter a workspace objective first.");
-       return;
-     }
-     
-     setIsAiAssistantOpen(true);
-  };
 
-  const handleAiDashboardCreated = (newDashboard) => {
-      setDashboardId(newDashboard._id);
-      setLayouts(newDashboard.layouts);
-      setOriginalLayouts(newDashboard.layouts);
-      setWidgets(newDashboard.widgets);
-      setAiPrompt("");
-  };
 
   const handleDrop = (layout, layoutItem, _event) => {
-    const displayType = _event.dataTransfer.getData("text/plain");
+    // Use module-level variable — dataTransfer is cleared before this callback fires
+    const displayType = _draggedWidgetType || (_event?.dataTransfer?.getData('text/plain'));
+    _draggedWidgetType = null;
     if (!displayType) return;
 
     const typeMap = {
@@ -351,7 +336,10 @@ const Dashboard = () => {
     <MainLayout title="Dashboard Metrics">
       <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar Library */}
-        <WidgetLibrary isEditing={isEditing} />
+        <WidgetLibrary
+          isEditing={isEditing}
+          onDragStart={(type) => { _draggedWidgetType = type; }}
+        />
 
         {/* Dashboard Workspace */}
         <main className={`flex-1 overflow-y-auto p-6 lg:p-8 transition-all duration-500 relative ${isEditing ? 'bg-surfaceActive animate-fade-in' : 'bg-transparent'}`}>
@@ -375,21 +363,13 @@ const Dashboard = () => {
                          onDelete={handleDeleteDashboard}
                          onRename={handleRenameDashboard}
                        />
-                       <div className="h-4 w-px bg-borderLight mx-1"></div>
-                       <form 
-                         onSubmit={handleAiGenerate}
-                         className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50/50 border border-emerald-100 rounded-xl group transition-all focus-within:ring-4 focus-within:ring-emerald-500/5 focus-within:border-emerald-300"
-                       >
-                         <Bot size={14} className="text-emerald-500 group-hover:animate-bounce" />
-                         <input 
-                           type="text"
-                           placeholder="Ask Workspan AI to build..."
-                           className="bg-transparent text-[11px] font-bold text-emerald-800 placeholder:text-emerald-400 outline-none w-48 lg:w-64"
-                           value={aiPrompt}
-                           onChange={(e) => setAiPrompt(e.target.value)}
-                         />
-                         <button type="submit" className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">Generate</button>
-                       </form>
+                        <div className="h-4 w-px bg-borderLight mx-1"></div>
+                        {/* Live Status Badge */}
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-xl">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                          <span className="text-[11px] font-bold text-emerald-700">Live</span>
+                        </div>
+
                     </div>
                     <div>
                       <h1 className="text-3xl font-bold text-textPrimary tracking-tight">
@@ -402,14 +382,13 @@ const Dashboard = () => {
                  
                  <div className="flex items-center gap-3">
                     {isAutoSaving && <span className="text-xs text-textTertiary font-bold animate-pulse flex items-center gap-1"><Save size={12}/> Saving...</span>}
-                    
-                    <button 
-                       onClick={() => setIsExportModalOpen(true)}
-                       className="group flex items-center gap-2 px-4 py-2 bg-white border border-borderLight text-textSecondary rounded-xl text-sm font-bold hover:text-textPrimary hover:border-textTertiary transition-all shadow-sm"
-                    >
-                       <Share2 className="h-4 w-4" />
-                       Export
-                    </button>
+                                        <button 
+                        onClick={() => setIsExportModalOpen(true)}
+                        className="group flex items-center gap-2 px-4 py-2.5 bg-white border border-borderLight text-textSecondary rounded-xl text-sm font-bold hover:text-textPrimary hover:border-primary/40 hover:bg-surface transition-all shadow-sm"
+                     >
+                        <Share2 className="h-4 w-4 group-hover:text-primary transition-colors" />
+                        Export
+                     </button>
                     {isEditing ? (
                        <div className="flex items-center gap-2">
                           {/* Undo / Redo Controls */}
@@ -432,18 +411,18 @@ const Dashboard = () => {
                           </button>
                        </div>
                     ) : (
-                       <button 
-                           onClick={() => setIsEditing(true)}
-                           className="flex items-center gap-2 bg-white border border-borderLight text-textPrimary px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-surfaceHover transition-all shadow-sm"
-                       >
-                           <Settings size={18} className="text-textTertiary" />
-                           Edit Dashboard
-                       </button>
+                        <button 
+                            onClick={() => setIsEditing(true)}
+                            className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                        >
+                            <Settings size={18} />
+                            Edit Dashboard
+                        </button>
                     )}
                  </div>
               </div>
 
-              {isLoading || isGenerating ? (
+              {isLoading ? (
                   <div className="flex flex-col justify-center items-center py-32 space-y-4">
                       <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                       <p className="text-primary font-bold animate-pulse text-xs tracking-widest uppercase">
@@ -453,37 +432,35 @@ const Dashboard = () => {
               ) : (
                   <>
                       {(widgets.length === 0 && !isEditing) && (
-                          <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-12">
-                              <div className="w-24 h-24 bg-surfaceHover rounded-full flex items-center justify-center mb-8 border border-borderLight">
-                                  <LayoutDashboard className="h-10 w-10 text-textTertiary" />
+                            <div className="flex flex-col items-center justify-center min-h-[55vh] text-center p-12">
+                              {/* Animated Icon */}
+                              <div className="relative w-28 h-28 mb-8">
+                                <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-40" />
+                                <div className="relative w-28 h-28 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent rounded-full flex items-center justify-center border border-primary/20 shadow-xl">
+                                  <LayoutDashboard className="h-12 w-12 text-primary" />
+                                </div>
                               </div>
-                              <h2 className="text-2xl font-bold text-textPrimary mb-3">Empty Workspace</h2>
-                              <p className="text-textSecondary max-w-sm mx-auto mb-8 leading-relaxed">
-                                  Your dashboard is ready for configuration. Add widgets manually or use our AI to generate a custom template.
+                              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-5">
+                                <Zap className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Ready to build</span>
+                              </div>
+                              <h2 className="text-3xl font-black text-textPrimary mb-3 tracking-tight">Empty Workspace</h2>
+                              <p className="text-textSecondary max-w-sm mx-auto mb-10 leading-relaxed">
+                                Your dashboard is ready. Add interactive widgets manually or kick-start with a pre-built template.
                               </p>
                               <div className="flex flex-wrap items-center justify-center gap-4">
                                   <button 
                                       onClick={() => setIsEditing(true)}
-                                      className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:shadow-lg shadow-primary/20 transition-all"
+                                      className="px-8 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95"
                                   >
                                       Enter Architect Mode
                                   </button>
                                   <button 
                                       onClick={handleAutoGenerate}
-                                      className="px-8 py-3 bg-white border border-borderLight text-textSecondary rounded-xl font-bold hover:bg-surfaceHover transition-all flex items-center gap-2"
+                                      className="px-8 py-3.5 bg-white border border-borderLight text-textSecondary rounded-2xl font-bold hover:bg-surface transition-all flex items-center gap-2 active:scale-95"
                                   >
-                                      <Bot size={18} /> Use Template
+                                      <Layers size={18} className="text-primary" /> Use Template
                                   </button>
-                                  
-                                  {isEditing && (
-                                    <div className="w-full mt-8 pt-8 border-t border-borderLight flex flex-col items-center">
-                                       <h3 className="text-sm font-bold text-textSecondary uppercase tracking-widest mb-4">Quick Layouts</h3>
-                                       <div className="flex gap-4">
-                                           <button onClick={() => applyTemplate('Sales')} className="px-6 py-2 bg-surfaceHover border border-borderLight text-textPrimary rounded-xl text-sm font-bold hover:border-primary transition-all">Sales View</button>
-                                           <button onClick={() => applyTemplate('Analytics')} className="px-6 py-2 bg-surfaceHover border border-borderLight text-textPrimary rounded-xl text-sm font-bold hover:border-primary transition-all">Analytics Focus</button>
-                                       </div>
-                                    </div>
-                                  )}
                               </div>
                           </div>
                       )}
@@ -572,12 +549,7 @@ const Dashboard = () => {
              </div>
           </div>
         </SideDrawer>
-         <AiAssistantModal 
-            isOpen={isAiAssistantOpen}
-            onClose={() => setIsAiAssistantOpen(false)}
-            initialPrompt={aiPrompt}
-            onGenerated={handleAiDashboardCreated}
-         />
+
       </div>
     </MainLayout>
   );

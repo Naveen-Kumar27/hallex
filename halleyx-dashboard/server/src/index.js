@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const path = require('path');
 const fs = require('fs');
-const AIDashboardService = require('./services/AIDashboardService');
+
 
 const http = require('http');
 const { Server } = require('socket.io');
@@ -38,9 +38,7 @@ app.use(morgan('dev'));
 app.get('/diag-now', (req, res) => {
   res.json({
     status: 'online',
-    deploymentId: 'DEBUG_403_V1',
-    hasKey: !!process.env.GEMINI_API_KEY,
-    keyPrefix: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'none'
+    deploymentId: 'DEBUG_403_V1'
   });
 });
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -69,8 +67,6 @@ app.get('/', (req, res) => {
 app.get('/final-diag', (req, res) => {
   res.json({
     status: 'ok',
-    hasKey: !!process.env.GEMINI_API_KEY,
-    keyPrefix: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'none',
     timestamp: new Date().toISOString(),
     node_env: process.env.NODE_ENV
   });
