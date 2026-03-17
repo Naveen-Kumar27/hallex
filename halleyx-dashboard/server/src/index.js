@@ -33,6 +33,16 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+
+// TOP LEVEL DIAGNOSTIC (Before any other middleware or routes)
+app.get('/diag-now', (req, res) => {
+  res.json({
+    status: 'online',
+    deploymentId: 'DEBUG_403_V1',
+    hasKey: !!process.env.GEMINI_API_KEY,
+    keyPrefix: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 8) + '...' : 'none'
+  });
+});
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Socket.io connection
@@ -49,7 +59,11 @@ app.set('io', io);
 
 // Simple root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Halleyx Dashboard API', status: 'stable' });
+  res.json({ 
+    message: 'Welcome to the Halleyx Dashboard API', 
+    status: 'stable',
+    deployId: 'DEBUG_403_V1'
+  });
 });
 
 app.get('/final-diag', (req, res) => {
