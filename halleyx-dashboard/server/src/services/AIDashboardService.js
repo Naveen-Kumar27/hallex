@@ -195,6 +195,9 @@ class AIDashboardService {
       }
     } catch (err) {
       console.error("AI Analysis Failed:", err);
+      if (err.status === 503 || (err.message && err.message.includes('overloaded'))) {
+        throw new Error("GEMINI_OVERLOADED: The AI service is currently experiencing high traffic. Please try again in a few moments.");
+      }
       throw new Error("Failed to analyze requirements: " + err.message);
     }
   }

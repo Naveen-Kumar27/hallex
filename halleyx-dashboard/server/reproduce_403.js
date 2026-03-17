@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'https://hallex.onrender.com/api';
 
 async function reproduce() {
     console.log("--- Starting Reproduction Script ---");
