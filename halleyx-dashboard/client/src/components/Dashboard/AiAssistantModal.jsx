@@ -159,6 +159,28 @@ const AiAssistantModal = ({ isOpen, onClose, onDashboardCreated }) => {
             </div>
           </div>
         </div>
+
+        {/* Architecting Overlay */}
+        {isGenerating && (
+          <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center p-12 text-center animate-in fade-in duration-500">
+            <div className="relative w-24 h-24 mb-6">
+              <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping" />
+              <div className="relative w-24 h-24 bg-primary text-white rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 overflow-hidden">
+                <Bot size={40} className="animate-bounce" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-black text-textPrimary mb-2 tracking-tight">Architecting Protocol</h3>
+            <p className="text-textSecondary text-sm max-w-xs leading-relaxed font-bold">
+              Workspan AI is analyzing your request and synthesizing a custom analytical environment...
+            </p>
+            <div className="mt-8 flex gap-1">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

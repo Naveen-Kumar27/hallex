@@ -398,25 +398,26 @@ const Dashboard = () => {
                 </div>
 
                 {!isEditing && (
-                  <div className="flex-1 max-w-md mx-6 hidden xl:block">
+                  <div className="flex-1 max-w-xl mx-8 hidden xl:block">
                     <form onSubmit={handleAiGenerate} className="relative group">
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-primary z-10">
+                        <div className="absolute inset-0 bg-primary/5 rounded-full scale-0 group-focus-within:scale-100 transition-transform duration-500" />
+                        <Bot size={20} className="relative animate-pulse" />
+                      </div>
                       <input 
                         type="text"
                         value={aiPrompt}
                         onChange={(e) => setAiPrompt(e.target.value)}
                         placeholder="Ask Workspan AI to build a dashboard..."
-                        className="w-full pl-12 pr-24 py-3 bg-white border border-borderLight rounded-2xl text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all shadow-sm group-hover:shadow-md"
+                        className="w-full pl-12 pr-28 py-3.5 bg-white border border-borderLight rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-sm group-hover:shadow-md group-hover:border-primary/20"
                       />
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 group-hover:opacity-100 transition-opacity">
-                        <Bot size={20} />
-                      </div>
                       <button 
                         type="submit"
                         disabled={!aiPrompt.trim() || isAiGenerating}
-                        className="absolute right-2 top-1.5 px-4 py-1.5 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-30 flex items-center gap-1.5"
+                        className="absolute right-1.5 top-1.5 px-5 py-2 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-30 flex items-center gap-2 shadow-lg shadow-primary/20"
                       >
                         {isAiGenerating ? <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkles size={14} />}
-                        Build
+                        {isAiGenerating ? 'Building' : 'Build'}
                       </button>
                     </form>
                   </div>
@@ -479,14 +480,44 @@ const Dashboard = () => {
                       </div>
                       <h2 className="text-3xl font-black text-textPrimary mb-3 tracking-tight">Empty Workspace</h2>
                       <p className="text-textSecondary max-w-sm mx-auto mb-10 leading-relaxed text-sm">
-                        Your dashboard is ready. Add interactive widgets manually or kick-start with a pre-built template.
+                        Start from scratch, use a template, or let <b>Workspan AI</b> build your entire operational protocol in seconds.
                       </p>
-                      <div className="flex flex-wrap items-center justify-center gap-4">
-                        <button onClick={() => setIsEditing(true)} className="px-8 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95">
-                          Enter Architect Mode
+
+                      <div className="w-full max-w-xl mx-auto mb-12 p-1.5 bg-white border border-borderLight rounded-[2rem] shadow-xl shadow-primary/5 group focus-within:ring-8 focus-within:ring-primary/5 transition-all">
+                        <form onSubmit={handleAiGenerate} className="flex items-center gap-2">
+                          <div className="pl-5 text-primary">
+                            <Bot size={24} className="animate-pulse" />
+                          </div>
+                          <input 
+                            type="text"
+                            value={aiPrompt}
+                            onChange={(e) => setAiPrompt(e.target.value)}
+                            placeholder="Describe your ideal dashboard (e.g., 'A fintech overview with revenue trends')..."
+                            className="flex-1 py-4 bg-transparent text-sm font-medium outline-none placeholder:text-textTertiary"
+                          />
+                          <button 
+                            type="submit"
+                            disabled={!aiPrompt.trim() || isAiGenerating}
+                            className="mr-1 px-8 py-3.5 bg-primary text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
+                          >
+                            {isAiGenerating ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkles size={16} />}
+                            {isAiGenerating ? 'Architecting...' : 'Build Now'}
+                          </button>
+                        </form>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-center gap-6 pt-6 border-t border-borderLight/50">
+                        <button onClick={() => setIsEditing(true)} className="group flex items-center gap-2 text-sm font-bold text-textSecondary hover:text-primary transition-all">
+                          <div className="w-8 h-8 rounded-lg bg-surface border border-borderLight flex items-center justify-center group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
+                            <Settings size={14} />
+                          </div>
+                          Manual Setup
                         </button>
-                        <button onClick={handleAutoGenerate} className="px-8 py-3.5 bg-white border border-borderLight text-textSecondary rounded-2xl font-bold hover:bg-surface transition-all flex items-center gap-2 active:scale-95">
-                          <Layers size={18} className="text-primary" /> Use Template
+                        <button onClick={handleAutoGenerate} className="group flex items-center gap-2 text-sm font-bold text-textSecondary hover:text-primary transition-all">
+                          <div className="w-8 h-8 rounded-lg bg-surface border border-borderLight flex items-center justify-center group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
+                            <Layers size={14} />
+                          </div>
+                          Quick Template
                         </button>
                       </div>
                     </div>
