@@ -2,9 +2,10 @@ const { GoogleGenAI } = require('@google/genai');
 const Dashboard = require('../models/Dashboard');
 const Widget = require('../models/Widget');
 
+console.log('AIDashboardService: Initializing with GEMINI_API_KEY presence:', !!process.env.GEMINI_API_KEY);
+
 const ai = new GoogleGenAI({ 
-  apiKey: process.env.GEMINI_API_KEY,
-  apiVersion: 'v1'
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 class AIDashboardService {
@@ -49,7 +50,7 @@ class AIDashboardService {
 
     try {
         const result = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
+            model: 'gemini-2.0-flash',
             contents: promptInstructions
         });
         
@@ -163,7 +164,7 @@ class AIDashboardService {
 
     try {
       const result = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash',
         contents: analysisPrompt
       });
 
