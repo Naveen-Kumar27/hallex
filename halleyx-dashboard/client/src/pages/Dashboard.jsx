@@ -398,26 +398,27 @@ const Dashboard = () => {
                 </div>
 
                 {!isEditing && (
-                  <div className="flex-1 max-w-xl mx-8 hidden xl:block">
+                  <div className="flex-1 max-w-xl mx-4 lg:mx-8 hidden lg:block">
                     <form onSubmit={handleAiGenerate} className="relative group">
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-primary z-10">
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 lg:w-12 h-10 lg:h-12 flex items-center justify-center text-primary z-10">
                         <div className="absolute inset-0 bg-primary/5 rounded-full scale-0 group-focus-within:scale-100 transition-transform duration-500" />
-                        <Bot size={20} className="relative animate-pulse" />
+                        <Bot size={18} className="relative animate-pulse lg:hidden" />
+                        <Bot size={20} className="relative animate-pulse hidden lg:block" />
                       </div>
                       <input 
                         type="text"
                         value={aiPrompt}
                         onChange={(e) => setAiPrompt(e.target.value)}
-                        placeholder="Ask Workspan AI to build a dashboard..."
-                        className="w-full pl-12 pr-28 py-3.5 bg-white border border-borderLight rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-sm group-hover:shadow-md group-hover:border-primary/20"
+                        placeholder="Ask AI to build..."
+                        className="w-full pl-10 lg:pl-12 pr-20 lg:pr-28 py-2.5 lg:py-3.5 bg-white border border-borderLight rounded-2xl text-xs lg:text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-sm group-hover:shadow-md group-hover:border-primary/20"
                       />
                       <button 
                         type="submit"
                         disabled={!aiPrompt.trim() || isAiGenerating}
-                        className="absolute right-1.5 top-1.5 px-5 py-2 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-30 flex items-center gap-2 shadow-lg shadow-primary/20"
+                        className="absolute right-1 top-1 lg:right-1.5 lg:top-1.5 px-3 lg:px-5 py-1.5 lg:py-2 bg-primary text-white rounded-xl text-[9px] lg:text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-30 flex items-center gap-2 shadow-lg shadow-primary/20"
                       >
-                        {isAiGenerating ? <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkles size={14} />}
-                        {isAiGenerating ? 'Building' : 'Build'}
+                        {isAiGenerating ? <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkles size={12} className="lg:w-[14px] lg:h-[14px]" />}
+                        <span className="hidden sm:inline">{isAiGenerating ? 'Building' : 'Build'}</span>
                       </button>
                     </form>
                   </div>
@@ -427,10 +428,10 @@ const Dashboard = () => {
                   {isAutoSaving && <span className="text-xs text-textTertiary font-bold animate-pulse flex items-center gap-1"><Save size={12}/> Saving...</span>}
                   <button 
                     onClick={() => setIsExportModalOpen(true)}
-                    className="group flex items-center gap-2 px-4 py-2.5 bg-white border border-borderLight text-textSecondary rounded-xl text-sm font-bold hover:text-textPrimary hover:border-primary/40 hover:bg-surface transition-all shadow-sm"
+                    className="group flex items-center gap-2 px-3 lg:px-4 py-2 lg:py-2.5 bg-white border border-borderLight text-textSecondary rounded-xl text-[11px] lg:text-sm font-bold hover:text-textPrimary hover:border-primary/40 hover:bg-surface transition-all shadow-sm"
                   >
-                    <Share2 className="h-4 w-4 group-hover:text-primary transition-colors" />
-                    Export
+                    <Share2 className="h-3.5 w-3.5 lg:h-4 lg:w-4 group-hover:text-primary transition-colors" />
+                    <span className="hidden xs:inline">Export</span>
                   </button>
                   {isEditing ? (
                     <div className="flex items-center gap-2">
@@ -483,22 +484,23 @@ const Dashboard = () => {
                         Start from scratch, use a template, or let <b>Workspan AI</b> build your entire operational protocol in seconds.
                       </p>
 
-                      <div className="w-full max-w-xl mx-auto mb-12 p-1.5 bg-white border border-borderLight rounded-[2rem] shadow-xl shadow-primary/5 group focus-within:ring-8 focus-within:ring-primary/5 transition-all">
-                        <form onSubmit={handleAiGenerate} className="flex items-center gap-2">
-                          <div className="pl-5 text-primary">
-                            <Bot size={24} className="animate-pulse" />
+                      <div className="w-full max-w-xl mx-auto mb-12 p-1 lg:p-1.5 bg-white border border-borderLight rounded-2xl lg:rounded-[2rem] shadow-xl shadow-primary/5 group focus-within:ring-8 focus-within:ring-primary/5 transition-all">
+                        <form onSubmit={handleAiGenerate} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                          <div className="flex items-center gap-3 pl-3 sm:pl-5 pt-3 sm:pt-0">
+                            <Bot size={24} className="text-primary animate-pulse" />
+                            <span className="sm:hidden text-xs font-black uppercase tracking-widest text-primary">Workspan AI</span>
                           </div>
                           <input 
                             type="text"
                             value={aiPrompt}
                             onChange={(e) => setAiPrompt(e.target.value)}
-                            placeholder="Describe your ideal dashboard (e.g., 'A fintech overview with revenue trends')..."
-                            className="flex-1 py-4 bg-transparent text-sm font-medium outline-none placeholder:text-textTertiary"
+                            placeholder="Describe your dashboard..."
+                            className="flex-1 px-4 py-3 sm:py-4 bg-transparent text-sm font-medium outline-none placeholder:text-textTertiary"
                           />
                           <button 
                             type="submit"
                             disabled={!aiPrompt.trim() || isAiGenerating}
-                            className="mr-1 px-8 py-3.5 bg-primary text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
+                            className="m-1 px-6 lg:px-8 py-3 lg:py-3.5 bg-primary text-white rounded-xl lg:rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
                           >
                             {isAiGenerating ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkles size={16} />}
                             {isAiGenerating ? 'Architecting...' : 'Build Now'}
