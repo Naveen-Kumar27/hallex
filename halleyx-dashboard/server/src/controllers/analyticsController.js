@@ -38,6 +38,7 @@ exports.aiGenerateDashboard = async (req, res) => {
 // @access  Public
 exports.aiAnalyzeRequirement = async (req, res) => {
   try {
+    console.log("Request body:", req.body);
     const { prompt, history } = req.body;
     console.log('Backend: AI Analyze Request received. Prompt:', prompt);
     if (!prompt) return res.status(400).json({ message: "Prompt is required" });
