@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 import { SOCKET_URL } from '../config';
 
 console.log('useSocket: Connecting to:', SOCKET_URL);
