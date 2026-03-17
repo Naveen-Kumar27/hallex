@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ordersApi } from '../api';
+import { ordersApi, paymentsApi } from '../api';
 import toast from 'react-hot-toast';
-import axios from 'axios';
 import { API_BASE_URL as API_URL } from '../config';
 import { format } from 'date-fns';
 import { Plus, Search, Filter, MoreHorizontal, Eye, Trash2, ChevronRight, Download, CreditCard, Loader2 } from 'lucide-react';
@@ -46,15 +45,10 @@ const Orders = () => {
     e.stopPropagation();
     setIsProcessingPayment(orderId);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `${API_URL}/payments/create-session`,
-        { orderId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await paymentsApi.createSession(orderId);
 
-      if (response.data.url) {
-        window.location.href = response.data.url;
+      if (response.url) {
+        window.location.href = response.url;
       }
     } catch (error) {
       console.error('Payment error:', error);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, MapPin, Package, Clock, ShieldCheck, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
-import axios from 'axios';
+import { paymentsApi } from '../../api';
 import toast from 'react-hot-toast';
 import { API_BASE_URL as API_URL } from '../../config';
 
@@ -13,21 +13,10 @@ const OrderDetailView = ({ data }) => {
   const handlePayment = async () => {
     setIsPaying(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `${API_URL}/payments/create-session`,
-        {
-          orderId: data._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await paymentsApi.createSession(data._id);
 
-      if (response.data.url) {
-        window.location.href = response.data.url;
+      if (response.url) {
+        window.location.href = response.url;
       }
     } catch (error) {
       console.error('Payment error:', error);
