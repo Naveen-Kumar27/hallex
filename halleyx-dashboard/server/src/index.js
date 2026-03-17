@@ -49,7 +49,7 @@ app.set('io', io);
 
 // Simple root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Halleyx Dashboard API', version: '1.0.3 (final-diag)', timestamp: new Date().toISOString() });
+  res.json({ message: 'Welcome to the Halleyx Dashboard API', status: 'stable' });
 });
 
 // Import Routes
@@ -58,50 +58,6 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/dashboards', require('./routes/dashboardRoutes'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 // app.use('/api/widgets', require('./routes/widgetRoutes'));
-
-// Debug Environment (Remove in production)
-app.get('/debug-env', (req, res) => {
-  const key = process.env.GEMINI_API_KEY;
-  res.json({
-    hasKey: !!key,
-    keyLength: key ? key.length : 0,
-    keyPrefix: key ? key.substring(0, 8) + '...' : 'none',
-    nodeEnv: process.env.NODE_ENV,
-    version: '1.0.3'
-  });
-});
-
-// AI Analyze Requirement (Directly in index.js for debugging Render issue)
-app.post('/api/analytics/ai-analyze', async (req, res) => {
-  try {
-    console.log("--- AI ANALYZE REQUEST ---");
-    console.log("Request body:", JSON.stringify(req.body));
-    const { prompt, history } = req.body;
-    
-    if (!prompt) {
-      console.warn("Missing prompt in request");
-      return res.status(400).json({ message: "Prompt is required" });
-    }
-
-    console.log("Calling AIDashboardService.analyzeRequirement...");
-    const analysis = await AIDashboardService.analyzeRequirement(prompt, history);
-    console.log("Analysis successful");
-    res.json(analysis);
-  } catch (error) {
-    console.error("!!! AI ANALYZE FAILED !!!");
-    console.error("Error Message:", error.message);
-    console.error("Error Stack:", error.stack);
-    
-    // Check for specific Gemini errors
-    const errorMessage = error.message || 'Unknown error';
-    const statusCode = errorMessage.includes('403') || errorMessage.includes('PERMISSION_DENIED') ? 403 : 500;
-    
-    res.status(statusCode).json({ 
-      error: errorMessage,
-      details: error.stack?.split('\n').slice(0, 3).join(' ') 
-    });
-  }
-});
 
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
